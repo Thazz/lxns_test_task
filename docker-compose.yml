@@ -1,0 +1,59 @@
+version: '3'
+services:
+  postgres_db:
+    image: "postgres:latest"
+    restart: unless-stopped
+    container_name: postgres_container
+    environment:
+      POSTGRES_DB: lxns_test
+      POSTGRES_USER: ${PSQL_USER}
+      POSTGRES_PASSWORD: ${PSQL_PWD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready --username=$PSQL_USER --host=postgres_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - lxns_network
+
+  flask_app:
+    build:
+      context: ./
+    restart: on-failure
+    container_name: flask_container
+    privileged: true
+    depends_on:
+      - postgres_db
+    environment:
+      DB_HOST: postgres_db
+      DB_PORT: 5432
+      DB_NAME: lxns_test
+      DB_USER: ${PSQL_USER}
+      DB_PWD: ${PSQL_PWD}
+    labels:
+      ofelia.enabled: "true"
+      ofelia.job-exec.app.schedule: "@every 1m"
+      ofelia.job-exec.app.command: "/opt/lxns/run_scrapy.sh"  
+    ports:
+      - "8080:8080"
+    networks:
+      - lxns_network
+
+  ofelia:
+    image: mcuadros/ofelia:latest
+    restart: unless-stopped
+    depends_on:
+      - flask_app
+    command: daemon --docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:r    
+
+volumes:
+  db_data:
+
+networks:
+  lxns_network:

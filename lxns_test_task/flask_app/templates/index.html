@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="static/stylesheets/app.css" />
+    <script type="text/javascript" src="static/scripts/app.js"></script>
+  </head>
+
+  <body>
+    <div class="header">
+      <h1>Real Estate Scraper</h1>
+      <p>
+        Displays first 500 real estate offers from <a href="https://www.sreality.cz/en" target="_blank">sreality.cz</a> platform. Hover over an image for more information.
+      </p>
+    </div>
+
+    {% for i in range(0, num_items) %}
+      <div class="responsive">
+        <div class="gallery">
+          <img id="Img{{ i }}" onclick="openModal({{ i }});currentSlide(1, {{ i }})" src="{{ estates[i]['img_urls'][0] }}" width="400" height="300" class="cursor" />
+
+          <div class="img_desc cursor" onclick="openModal({{ i }});currentSlide(1, {{ i }})"><ul><li>{{ estates[i]['name'] }}</li><li>{{estates[i]['locality']}}</li><li>{{estates[i]['price']}} CZK</li></ul></div>
+          <div id="modalGallery{{ i }}" class="modal">
+            <span class="close cursor" onclick="closeModal({{ i }})">&times;</span>
+            <div class="modal-content">
+              {% for j in range(0, estates[i]['img_urls'].__len__()) %}
+                <div class="modalSlides{{ i }}">
+                  <div class="numbertext">{{ j + 1 }} / {{ estates[i]['img_urls'].__len__() }}</div>
+                  <img src="{{ estates[i]['img_urls'][j] }}" style="width:100%" />
+                </div>
+              {% endfor %}
+
+              <a class="prev" onclick="plusSlides(-1, {{ i }})">&#10094;</a>
+              <a class="next" onclick="plusSlides(1, {{ i }})">&#10095;</a>
+
+              {% for j in range(0, estates[i]['img_urls'].__len__()) %}
+                <div class="column">
+                  <img class="imgRow imgRow{{ i }} cursor" src="{{ estates[i]['img_urls'][j] }}" style="width:100%" onclick="currentSlide({{ j + 1 }}, {{ i }})" />
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </body>
+</html>
