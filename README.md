@@ -12,10 +12,21 @@ Clone this repository to your local machine
 ```
 git clone https://github.com/Thazz/lxns_test_task.git
 ```
-Move to the root project folder and start the application using docker-compose
+and move to the root project folder (`lxns_test_task`)
+
+#### Using prebuild docker image
+The application is already shared on [dockerhub](https://hub.docker.com/). To start the application using a prebuilt image, use 
+```
+docker-compose -f docker-compose-prebuilt.yaml up -d
+```
+
+#### Build image locally
+To start the application using a locally build docker image, use
 ```
 docker-compose up -d
 ```
+
+#### Application status
 You can check the status of the started containers with 
 ```
 docker-compose ps

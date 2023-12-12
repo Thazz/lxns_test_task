@@ -21,8 +21,7 @@ services:
       - lxns_network
 
   flask_app:
-    build:
-      context: ./
+    image: thazz/lxns-test-app:latest
     restart: on-failure
     container_name: lxns_web_app
     depends_on:
