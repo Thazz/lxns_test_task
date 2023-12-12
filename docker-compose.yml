@@ -3,7 +3,7 @@ services:
   postgres_db:
     image: "postgres:latest"
     restart: unless-stopped
-    container_name: postgres_container
+    container_name: lxns_db
     environment:
       POSTGRES_DB: lxns_test
       POSTGRES_USER: ${PSQL_USER}
@@ -24,7 +24,7 @@ services:
     build:
       context: ./
     restart: on-failure
-    container_name: flask_container
+    container_name: lxns_web_app
     privileged: true
     depends_on:
       - postgres_db
@@ -45,6 +45,7 @@ services:
 
   ofelia:
     image: mcuadros/ofelia:latest
+    container_name: lxns_scheduler
     restart: unless-stopped
     depends_on:
       - flask_app
